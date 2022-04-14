@@ -1,0 +1,11 @@
+{
+    "name": "com.pixel.meteoroid.ui.toolkit",
+    "displayName": "Meteoroid UI Toolkit",
+    "version": "0.0.1",
+    "unity": "2021.2",
+    "description": "Meteoroid.UI.Toolkit is a package that contains scripts for building user interfaces in Unity.",
+    "keywords": [
+        "ui"
+    ],
+    "category": "UI"
+}

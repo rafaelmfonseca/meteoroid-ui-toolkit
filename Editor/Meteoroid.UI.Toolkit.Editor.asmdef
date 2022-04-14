@@ -1,0 +1,17 @@
+{
+    "name": "Meteoroid.UI.Toolkit.Editor",
+    "references": [
+        "Meteoroid.UI.Toolkit"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
