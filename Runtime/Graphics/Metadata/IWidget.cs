@@ -8,18 +8,8 @@ namespace Meteoroid.Graphics.Metadata
 
         GameObject Element { get; set; }
 
-        void NotifyPropertyChanged(string propertyName);
+        void RegistryPropertyState(string propertyName, IState state);
 
-        void OnPropertyChanged(PropertyChangedEvent e);
-    }
-
-    public class PropertyChangedEvent
-    {
-        public string PropertyName { get; }
-
-        public PropertyChangedEvent(string propertyName)
-        {
-            PropertyName = propertyName;
-        }
+        void OnStateChanged(StateChangedEvent e);
     }
 }

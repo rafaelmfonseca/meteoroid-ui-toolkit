@@ -1,5 +1,4 @@
-﻿using System;
-using Meteoroid.Graphics.Metadata;
+﻿using Meteoroid.Graphics.Metadata;
 using UnityEngine;
 
 namespace Meteoroid.Graphics.Controls
@@ -15,37 +14,27 @@ namespace Meteoroid.Graphics.Controls
 
             set
             {
-                if (_anchor == value)
-                    return;
+                if (_anchor == value) return;
 
                 _anchor = value;
 
-                NotifyPropertyChanged(nameof(Anchor));
+                RegistryPropertyState(nameof(Anchor), value);
             }
         }
 
-        public Box()
+        public Box() : base()
         {
-            Element = new GameObject();
-
             _rectTransform = Element.AddComponent<RectTransform>();
         }
 
-        public override void OnPropertyChanged(PropertyChangedEvent e)
+        public override void OnStateChanged(StateChangedEvent e)
         {
             if (e.PropertyName == nameof(Anchor))
             {
-                Action anchorChanged = () =>
-                {
-                    _rectTransform.anchorMax = _anchor.Value.anchorMax;
-                    _rectTransform.anchorMin = _anchor.Value.anchorMin;
+                _rectTransform.anchorMax = _anchor.Value.anchorMax;
+                _rectTransform.anchorMin = _anchor.Value.anchorMin;
 
-                    _rectTransform.ForceUpdateRectTransforms();
-                };
-
-                anchorChanged();
-
-                Anchor.AddListener(anchorChanged);
+                _rectTransform.ForceUpdateRectTransforms();
             }
         }
     }

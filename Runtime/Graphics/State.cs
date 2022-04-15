@@ -1,98 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
+using Meteoroid.Graphics.Metadata;
+using UnityEngine.Events;
 
 namespace Meteoroid.Graphics
 {
-    public class State<T>
+    public class State : IState
     {
-        private List<Action<ValueChangedEvent<T>>> _invokableCallList;
-        private Func<T> _valueSource;
-        private T _value;
+        private UnityEvent<ValueChangedEvent> _invokableCallList = new UnityEvent<ValueChangedEvent>();
+        private bool _disabled;
+        private object _value;
 
-        public T Value
+        public object Value
         {
             get => _value;
 
             set
             {
-                if (EqualityComparer<T>.Default.Equals(_value, value)) return;
+                if (Disabled)
+                    throw new InvalidOperationException($"Can't set value to \"{value.ToString()}\", the state is disabled.");
+
+                if (EqualityComparer<object>.Default.Equals(_value, value)) return;
 
                 var previousValue = _value;
 
                 _value = value;
 
-                var parameters = new ValueChangedEvent<T>(previousValue, _value);
+                var args = new ValueChangedEvent(this, previousValue, _value);
 
-                if (_invokableCallList == null)
-                    return;
-
-                for (var i = 0; i < _invokableCallList.Count; i++)
-                {
-                    _invokableCallList[i].Invoke(parameters);
-                }
+                _invokableCallList?.Invoke(args);
             }
         }
 
-        public State(Func<T> valueSource)
+        public bool Disabled
         {
-            _valueSource = valueSource;
+            get => _disabled;
 
-            TriggerValueSource();
+            set
+            {
+                if (_disabled == value) return;
+
+                _disabled = value;
+            }
         }
 
-        public State(T initialValue)
+        public State(object value)
         {
-            Value = initialValue;
+            Value = value;
         }
 
         public State() { }
 
-        public void AddListener(Action<ValueChangedEvent<T>> listener)
+        public void AddListener(UnityAction<ValueChangedEvent> call)
         {
-            if (_invokableCallList == null)
-                _invokableCallList = new List<Action<ValueChangedEvent<T>>>();
-
-            _invokableCallList.Add(listener);
+            lock (_invokableCallList)
+            {
+                _invokableCallList.AddListener(call);
+            }
         }
 
-        public void AddListener(Action listener)
+        public void RemoveListener(UnityAction<ValueChangedEvent> call)
         {
-            if (_invokableCallList == null)
-                _invokableCallList = new List<Action<ValueChangedEvent<T>>>();
-
-            _invokableCallList.Add((e) => listener());
+            lock (_invokableCallList)
+            {
+                _invokableCallList.RemoveListener(call);
+            }
         }
 
-        public void ClearAllListeners()
+        public void RemoveAllListeners()
         {
-            if (_invokableCallList == null)
-                return;
-
-            _invokableCallList.Clear();
-        }
-
-        public void TriggerValueSource()
-        {
-            if (_valueSource == null)
-                throw new InvalidOperationException($"Cannot trigger state without a source.");
-
-            Value = _valueSource();
-        }
-
-        public static implicit operator T(State<T> state) => state.Value;
-        public static implicit operator State<T>(T value) => new State<T>(value);
-    }
-
-    public class ValueChangedEvent<T>
-    {
-        public T OldValue { get; }
-
-        public T NewValue { get; }
-
-        public ValueChangedEvent(T oldValue, T newValue)
-        {
-            OldValue = oldValue;
-            NewValue = newValue;
+            lock (_invokableCallList)
+            {
+                _invokableCallList.RemoveAllListeners();
+            }
         }
     }
 }

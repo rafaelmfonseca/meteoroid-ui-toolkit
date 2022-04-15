@@ -1,11 +1,14 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using Meteoroid.Graphics.Metadata;
+using System.Collections.Concurrent;
 
 namespace Meteoroid.Graphics
 {
     public abstract class Widget : IWidget
     {
+        private ConcurrentDictionary<string, IState> _states = new ConcurrentDictionary<string, IState>();
         private IWidget[] _children;
         private GameObject _element;
 
@@ -15,8 +18,7 @@ namespace Meteoroid.Graphics
 
             set
             {
-                if (_children == value)
-                    return;
+                if (_children == value) return;
 
                 _children = value;
 
@@ -30,8 +32,7 @@ namespace Meteoroid.Graphics
 
             set
             {
-                if (_element == value)
-                    return;
+                if (_element == value) return;
 
                 _element = value;
 
@@ -39,11 +40,40 @@ namespace Meteoroid.Graphics
             }
         }
 
-        public abstract void OnPropertyChanged(PropertyChangedEvent e);
-
-        public void NotifyPropertyChanged(string propertyName)
+        public Widget()
         {
-            OnPropertyChanged(new PropertyChangedEvent(propertyName));
+            Element = new GameObject();
+        }
+
+        public void RegistryPropertyState(string propertyName, IState newState)
+        {
+            TriggerStateChanged(propertyName);
+
+            newState.AddListener(InternalOnValueChanged);
+
+            _states.AddOrUpdate(propertyName, newState, (propertyName, existingState) =>
+            {
+                if (existingState != null)
+                {
+                    existingState.RemoveListener(InternalOnValueChanged);
+                }
+
+                return newState;
+            });
+        }
+
+        public abstract void OnStateChanged(StateChangedEvent e);
+
+        private void InternalOnValueChanged(ValueChangedEvent args)
+        {
+            var propertyName = _states.FirstOrDefault((keyPair) => keyPair.Value == args.State).Key;
+
+            TriggerStateChanged(propertyName);
+        }
+
+        private void TriggerStateChanged(string propertyName)
+        {
+            OnStateChanged(new StateChangedEvent(propertyName));
         }
 
         private void UpdateChildrenParent()
