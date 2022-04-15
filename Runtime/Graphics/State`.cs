@@ -63,10 +63,14 @@ namespace Meteoroid.Graphics
             }
         }
 
-        public State(T initialValue)
+
+        public State(T initialValue, bool disabled)
         {
+            _disabled = disabled;
             _value = initialValue;
         }
+
+        public State(T initialValue) : this(initialValue, false) { }
 
         public State() { }
 
@@ -133,8 +137,6 @@ namespace Meteoroid.Graphics
         }
 
         public static implicit operator T(State<T> state) => state.Value;
-        public static implicit operator State<T>(T value) => new State<T>(value);
+        public static implicit operator State<T>(T value) => new State<T>(value, true);
     }
-
-
 }

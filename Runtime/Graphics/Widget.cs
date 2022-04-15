@@ -42,18 +42,24 @@ namespace Meteoroid.Graphics
 
         public Widget()
         {
-            Element = new GameObject();
+            Element = new GameObject()
+            {
+                name = $"__ [Widget] {this.GetType().Name}"
+            };
         }
 
         public void RegistryPropertyState(string propertyName, IState newState)
         {
             TriggerStateChanged(propertyName);
 
-            newState.AddListener(InternalOnValueChanged);
+            if (newState is not null && newState is not { Disabled: true })
+            {
+                newState.AddListener(InternalOnValueChanged);
+            }
 
             _states.AddOrUpdate(propertyName, newState, (propertyName, existingState) =>
             {
-                if (existingState != null)
+                if (existingState is not null)
                 {
                     existingState.RemoveListener(InternalOnValueChanged);
                 }
@@ -78,10 +84,10 @@ namespace Meteoroid.Graphics
 
         private void UpdateChildrenParent()
         {
-            if (_children == null)
+            if (_children is null)
                 return;
 
-            if (_element == null)
+            if (_element is null)
                 throw new InvalidOperationException($"Tried to set children Transform, but Element is null.");
 
             for (int i = 0; i < _children.Length; i++)

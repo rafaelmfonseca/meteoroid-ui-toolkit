@@ -1,4 +1,5 @@
 ﻿using Meteoroid.Graphics.Metadata;
+using Meteoroid.Graphics.Metadata.Generic;
 using UnityEngine;
 
 namespace Meteoroid.Graphics.Controls
@@ -7,6 +8,7 @@ namespace Meteoroid.Graphics.Controls
     {
         private readonly RectTransform _rectTransform;
         private State<AnchorRect> _anchor;
+        private State<Vector2> _pivot;
 
         public State<AnchorRect> Anchor
         {
@@ -22,6 +24,20 @@ namespace Meteoroid.Graphics.Controls
             }
         }
 
+        public State<Vector2> Pivot
+        {
+            get => _pivot;
+
+            set
+            {
+                if (_pivot == value) return;
+
+                _pivot = value;
+
+                RegistryPropertyState(nameof(Pivot), value);
+            }
+        }
+
         public Box() : base()
         {
             _rectTransform = Element.AddComponent<RectTransform>();
@@ -33,6 +49,12 @@ namespace Meteoroid.Graphics.Controls
             {
                 _rectTransform.anchorMax = _anchor.Value.anchorMax;
                 _rectTransform.anchorMin = _anchor.Value.anchorMin;
+
+                _rectTransform.ForceUpdateRectTransforms();
+            }
+            else if (e.PropertyName == nameof(Pivot))
+            {
+                _rectTransform.pivot = _pivot.Value;
 
                 _rectTransform.ForceUpdateRectTransforms();
             }
