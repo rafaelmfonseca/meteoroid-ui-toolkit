@@ -1,6 +1,5 @@
 ﻿using Meteoroid.Graphics.Metadata;
 using UnityEngine;
-using Meteoroid.Utilities;
 
 namespace Meteoroid.Graphics.Controls
 {
