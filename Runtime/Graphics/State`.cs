@@ -32,7 +32,7 @@ namespace Meteoroid.Graphics
             }
         }
 
-        public T Value
+        public virtual T Value
         {
             get => _value;
 
@@ -51,7 +51,7 @@ namespace Meteoroid.Graphics
             }
         }
 
-        public bool Disabled
+        public virtual bool Disabled
         {
             get => _disabled;
 
@@ -74,8 +74,11 @@ namespace Meteoroid.Graphics
 
         public State() { }
 
-        public void AddListener(UnityAction<ValueChangedEvent<T>> call)
+        public virtual void AddListener(UnityAction<ValueChangedEvent<T>> call)
         {
+            if (Disabled)
+                throw new InvalidOperationException($"Can't add a new listener, the state is disabled.");
+
             lock (_invokableGenericCallList)
             {
                 _invokableGenericCallList.AddListener(call);
@@ -84,13 +87,16 @@ namespace Meteoroid.Graphics
 
         void IState.AddListener(UnityAction<ValueChangedEvent> call)
         {
+            if (Disabled)
+                throw new InvalidOperationException($"Can't add a new listener, the state is disabled.");
+
             lock (_invokableCallList)
             {
                 _invokableCallList.AddListener(call);
             }
         }
 
-        public void RemoveListener(UnityAction<ValueChangedEvent<T>> call)
+        public virtual void RemoveListener(UnityAction<ValueChangedEvent<T>> call)
         {
             lock (_invokableGenericCallList)
             {
@@ -106,7 +112,7 @@ namespace Meteoroid.Graphics
             }
         }
 
-        public void RemoveAllListeners()
+        public virtual void RemoveAllListeners()
         {
             lock (_invokableGenericCallList)
             {

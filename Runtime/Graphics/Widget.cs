@@ -1,12 +1,13 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using Meteoroid.Graphics.Metadata;
 using System.Collections.Concurrent;
 
 namespace Meteoroid.Graphics
 {
-    public abstract class Widget : IWidget
+    public abstract class Widget : IWidget, IDisposable
     {
         private ConcurrentDictionary<string, IState> _states = new ConcurrentDictionary<string, IState>();
         private IWidget[] _children;
@@ -68,7 +69,17 @@ namespace Meteoroid.Graphics
             });
         }
 
-        public abstract void OnStateChanged(StateChangedEvent e);
+        public virtual void OnStateChanged(StateChangedEvent e) { }
+
+        public virtual void OnParentChanged(ElementParentChangedEvent e) { }
+
+        public virtual void Dispose()
+        {
+            _states.Clear();
+
+            _element = null;
+            _states = null;
+        }
 
         private void InternalOnValueChanged(ValueChangedEvent args)
         {
@@ -92,7 +103,12 @@ namespace Meteoroid.Graphics
 
             for (int i = 0; i < _children.Length; i++)
             {
-                _children[i].Element.transform.SetParent(_element.transform);
+                if (!ReferenceEquals(_children[i].Element.transform, _element.transform))
+                {
+                    _children[i].Element.transform.SetParent(_element.transform);
+
+                    _children[i].OnParentChanged(new ElementParentChangedEvent(this));
+                }
             }
         }
     }

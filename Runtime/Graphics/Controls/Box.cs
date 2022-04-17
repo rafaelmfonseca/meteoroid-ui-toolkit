@@ -1,6 +1,6 @@
 ﻿using Meteoroid.Graphics.Metadata;
-using Meteoroid.Graphics.Metadata.Generic;
 using UnityEngine;
+using Meteoroid.Utilities;
 
 namespace Meteoroid.Graphics.Controls
 {
@@ -9,6 +9,8 @@ namespace Meteoroid.Graphics.Controls
         private readonly RectTransform _rectTransform;
         private State<AnchorRect> _anchor;
         private State<Vector2> _pivot;
+        private State<Vector3> _position;
+        private State<Vector2> _size;
 
         public State<AnchorRect> Anchor
         {
@@ -38,6 +40,34 @@ namespace Meteoroid.Graphics.Controls
             }
         }
 
+        public State<Vector3> Position
+        {
+            get => _position;
+
+            set
+            {
+                if (_position == value) return;
+
+                _position = value;
+
+                RegistryPropertyState(nameof(Position), value);
+            }
+        }
+
+        public State<Vector2> Size
+        {
+            get => _size;
+
+            set
+            {
+                if (_size == value) return;
+
+                _size = value;
+
+                RegistryPropertyState(nameof(Size), value);
+            }
+        }
+
         public Box() : base()
         {
             _rectTransform = Element.AddComponent<RectTransform>();
@@ -47,17 +77,30 @@ namespace Meteoroid.Graphics.Controls
         {
             if (e.PropertyName == nameof(Anchor))
             {
-                _rectTransform.anchorMax = _anchor.Value.anchorMax;
                 _rectTransform.anchorMin = _anchor.Value.anchorMin;
-
-                _rectTransform.ForceUpdateRectTransforms();
+                _rectTransform.anchorMax = _anchor.Value.anchorMax;
             }
             else if (e.PropertyName == nameof(Pivot))
             {
-                _rectTransform.pivot = _pivot.Value;
+                var position = _rectTransform.localPosition;
 
-                _rectTransform.ForceUpdateRectTransforms();
+                _rectTransform.pivot = _pivot;
+
+                _rectTransform.localPosition = position;
             }
+            else if (e.PropertyName == nameof(Position))
+            {
+                _rectTransform.anchoredPosition3D = _position;
+            }
+            else if (e.PropertyName == nameof(Size))
+            {
+                _rectTransform.sizeDelta = _size;
+            }
+        }
+
+        public override void OnParentChanged(ElementParentChangedEvent e)
+        {
+
         }
     }
 }

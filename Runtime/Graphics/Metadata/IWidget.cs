@@ -11,5 +11,7 @@ namespace Meteoroid.Graphics.Metadata
         void RegistryPropertyState(string propertyName, IState state);
 
         void OnStateChanged(StateChangedEvent e);
+
+        void OnParentChanged(ElementParentChangedEvent e);
     }
 }
