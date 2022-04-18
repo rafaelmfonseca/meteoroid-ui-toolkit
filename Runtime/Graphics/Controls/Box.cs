@@ -10,6 +10,7 @@ namespace Meteoroid.Graphics.Controls
         private State<Vector2> _pivot;
         private State<Vector3> _position;
         private State<Vector2> _size;
+        private State<Margin> _margin;
 
         public State<AnchorRect> Anchor
         {
@@ -67,6 +68,20 @@ namespace Meteoroid.Graphics.Controls
             }
         }
 
+        public State<Margin> Margin
+        {
+            get => _margin;
+
+            set
+            {
+                if (_margin == value) return;
+
+                _margin = value;
+
+                RegistryPropertyState(nameof(Margin), value);
+            }
+        }
+
         public Box() : base()
         {
             _rectTransform = Element.AddComponent<RectTransform>();
@@ -76,8 +91,12 @@ namespace Meteoroid.Graphics.Controls
         {
             if (e.PropertyName == nameof(Anchor))
             {
+                _rectTransform.anchoredPosition3D = Vector3.zero;
+                _rectTransform.anchoredPosition = Vector2.zero;
                 _rectTransform.anchorMin = _anchor.Value.anchorMin;
                 _rectTransform.anchorMax = _anchor.Value.anchorMax;
+                _rectTransform.offsetMin = Vector2.zero;
+                _rectTransform.offsetMax = Vector2.zero;
             }
             else if (e.PropertyName == nameof(Pivot))
             {
@@ -90,10 +109,16 @@ namespace Meteoroid.Graphics.Controls
             else if (e.PropertyName == nameof(Position))
             {
                 _rectTransform.anchoredPosition3D = _position;
+                _rectTransform.anchoredPosition = _position.Value;
             }
             else if (e.PropertyName == nameof(Size))
             {
                 _rectTransform.sizeDelta = _size;
+            }
+            else if (e.PropertyName == nameof(Margin))
+            {
+                _rectTransform.offsetMin = new Vector2(_margin.Value.left, _margin.Value.bottom);
+                _rectTransform.offsetMax = new Vector2(-(_margin.Value.right), -(_margin.Value.top));
             }
         }
 

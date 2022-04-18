@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Globalization;
+using UnityEngine;
 
 namespace Meteoroid.Graphics
 {
-    public struct AnchorRect
+    public struct AnchorRect : IEquatable<AnchorRect>, IFormattable
     {
         public float minX;
         public float maxX;
@@ -31,28 +33,34 @@ namespace Meteoroid.Graphics
             this.maxX = maxX;
             this.maxY = maxY;
         }
-    }
 
-    public static class AnchorPresets
-    {
-        public static readonly AnchorRect TopLeft = new AnchorRect(minX: 0.0f, minY: 1.0f, maxX: 0.0f, maxY: 1.0f);
-        public static readonly AnchorRect TopCenter = new AnchorRect(minX: 0.5f, minY: 1.0f, maxX: 0.5f, maxY: 1.0f);
-        public static readonly AnchorRect TopRight = new AnchorRect(minX: 1.0f, minY: 1.0f, maxX: 1.0f, maxY: 1.0f);
-        public static readonly AnchorRect TopStretch = new AnchorRect(minX: 0.0f, minY: 1.0f, maxX: 1.0f, maxY: 1.0f);
+        public override bool Equals(object other)
+        {
+            if (!(other is AnchorRect)) return false;
 
-        public static readonly AnchorRect MiddleLeft = new AnchorRect(minX: 0.0f, minY: 0.5f, maxX: 0.0f, maxY: 0.5f);
-        public static readonly AnchorRect MiddleCenter = new AnchorRect(minX: 0.5f, minY: 0.5f, maxX: 0.5f, maxY: 0.5f);
-        public static readonly AnchorRect MiddleRight = new AnchorRect(minX: 1.0f, minY: 0.5f, maxX: 1.0f, maxY: 0.5f);
-        public static readonly AnchorRect MiddleStretch = new AnchorRect(minX: 0.0f, minY: 0.5f, maxX: 1.0f, maxY: 0.5f);
+            return Equals((AnchorRect)other);
+        }
 
-        public static readonly AnchorRect BottomLeft = new AnchorRect(minX: 0.0f, minY: 0.0f, maxX: 0.0f, maxY: 0.0f);
-        public static readonly AnchorRect BottomCenter = new AnchorRect(minX: 0.5f, minY: 0.0f, maxX: 0.5f, maxY: 0.0f);
-        public static readonly AnchorRect BottomRight = new AnchorRect(minX: 1.0f, minY: 0.0f, maxX: 1.0f, maxY: 0.0f);
-        public static readonly AnchorRect BottomStretch = new AnchorRect(minX: 0.0f, minY: 0.0f, maxX: 1.0f, maxY: 0.0f);
+        public bool Equals(AnchorRect other)
+        {
+            return minX == other.minX && minY == other.minY && maxX == other.maxX && maxY == other.maxY;
+        }
 
-        public static readonly AnchorRect StretchLeft = new AnchorRect(minX: 0.0f, minY: 0.0f, maxX: 0.0f, maxY: 1.0f);
-        public static readonly AnchorRect StretchCenter = new AnchorRect(minX: 0.5f, minY: 0.0f, maxX: 0.5f, maxY: 1.0f);
-        public static readonly AnchorRect StretchRight = new AnchorRect(minX: 1.0f, minY: 0.0f, maxX: 1.0f, maxY: 1.0f);
-        public static readonly AnchorRect StretchStretch = new AnchorRect(minX: 0.0f, minY: 0.0f, maxX: 1.0f, maxY: 1.0f);
+        public override int GetHashCode()
+        {
+            return minX.GetHashCode() ^ (minY.GetHashCode() << 4) ^ (maxX.GetHashCode() >> 28) ^ (maxY.GetHashCode() >> 4);
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (formatProvider == null)
+                formatProvider = CultureInfo.InvariantCulture.NumberFormat;
+
+            return String.Format("(max: [{0}, {1}], min: [{2}, {3}])",
+                maxX.ToString(format, formatProvider),
+                maxY.ToString(format, formatProvider),
+                minX.ToString(format, formatProvider),
+                minY.ToString(format, formatProvider));
+        }
     }
 }
