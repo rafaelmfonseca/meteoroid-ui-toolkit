@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
 using Meteoroid.Graphics.Metadata;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Meteoroid.Graphics
 {
@@ -49,8 +49,10 @@ namespace Meteoroid.Graphics
             };
         }
 
-        public void RegistryPropertyState(string propertyName, IState newState)
+        public void RegistryPropertyState<T>(ref T newValue, string propertyName, IState newState)
         {
+            if (ReferenceEquals(newValue, newState)) return;
+
             TriggerStateChanged(propertyName);
 
             if (newState is not null && newState is not { Disabled: true })
