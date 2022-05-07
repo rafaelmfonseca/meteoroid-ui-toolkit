@@ -1,5 +1,8 @@
-﻿namespace Meteoroid.Graphics.DataStructures
+﻿using System;
+
+namespace Meteoroid.Graphics.DataStructures
 {
+    [Serializable]
     public enum PivotPresets
     {
         TopLeft,
