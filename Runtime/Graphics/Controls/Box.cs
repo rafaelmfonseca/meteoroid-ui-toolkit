@@ -1,5 +1,6 @@
 ﻿using Meteoroid.Graphics.DataStructures;
 using Meteoroid.Graphics.Metadata;
+using Meteoroid.Graphics.Utilities;
 using UnityEngine;
 
 namespace Meteoroid.Graphics.Controls
@@ -7,12 +8,12 @@ namespace Meteoroid.Graphics.Controls
     public class Box : Widget
     {
         private readonly RectTransform _rectTransform;
-        private State<RectTransformData> _rectTransformData;
 
+        private State<RectTransformData> _rectTransformData;
         public State<RectTransformData> RectTransformData
         {
             get => _rectTransformData;
-            set => RegistryPropertyState(ref _rectTransformData, nameof(RectTransformData), value);
+            set => RegistryPropertyState(nameof(RectTransformData), ref _rectTransformData, value);
         }
 
         public Box() : base()
@@ -24,7 +25,11 @@ namespace Meteoroid.Graphics.Controls
         {
             if (e.PropertyName == nameof(RectTransformData))
             {
-
+                if (_rectTransformData is not null)
+                {
+                    _rectTransform.SetAnchor(_rectTransformData.Value.anchor);
+                    _rectTransform.SetPivot(_rectTransformData.Value.pivot);
+                }
             }
         }
 

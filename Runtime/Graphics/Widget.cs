@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using Meteoroid.Graphics.Metadata;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace Meteoroid.Graphics
 {
@@ -49,15 +48,17 @@ namespace Meteoroid.Graphics
             };
         }
 
-        public void RegistryPropertyState<T>(ref T newValue, string propertyName, IState newState)
+        public void RegistryPropertyState<T>(string propertyName, ref State<T> oldState, State<T> newState)
         {
-            if (ReferenceEquals(newValue, newState)) return;
+            if (ReferenceEquals(oldState, newState)) return;
+
+            oldState = newState;
 
             TriggerStateChanged(propertyName);
 
-            if (newState is not null && newState is not { Disabled: true })
+            if (newState is not null && newState is not { Disabled: true } && newState is IState state)
             {
-                newState.AddListener(InternalOnValueChanged);
+                state.AddListener(InternalOnValueChanged);
             }
 
             _states.AddOrUpdate(propertyName, newState, (propertyName, existingState) =>
@@ -71,9 +72,9 @@ namespace Meteoroid.Graphics
             });
         }
 
-        public virtual void OnStateChanged(StateChangedEvent e) { }
+        public abstract void OnStateChanged(StateChangedEvent e);
 
-        public virtual void OnParentChanged(ElementParentChangedEvent e) { }
+        public abstract void OnParentChanged(ElementParentChangedEvent e);
 
         public virtual void Dispose()
         {
