@@ -108,7 +108,7 @@ namespace Meteoroid.Graphics
             {
                 if (!ReferenceEquals(_children[i].Element.transform, _element.transform))
                 {
-                    _children[i].Element.transform.SetParent(_element.transform);
+                    _children[i].Element.transform.SetParent(_element.transform, worldPositionStays: false);
 
                     _children[i].OnParentChanged(new ElementParentChangedEvent(this));
                 }

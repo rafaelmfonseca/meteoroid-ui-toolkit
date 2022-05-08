@@ -44,24 +44,20 @@ namespace Meteoroid.Graphics.Controls
 
         public override void OnStateChanged(StateChangedEvent e)
         {
-            if (e.PropertyName == nameof(Pivot) && _pivot is not null)
+            if (   (_pivot    is not null)
+                && (_anchor   is not null)
+                && (_size     is not null)
+                && (_position is not null))
             {
+                _rectTransform.localScale = Vector3.one;
+
                 _rectTransform.SetPivot(_pivot);
-            }
-
-            if (e.PropertyName == nameof(Anchor) && _anchor is not null)
-            {
                 _rectTransform.SetAnchor(_anchor);
-            }
 
-            if (e.PropertyName == nameof(Size) && _size is not null)
-            {
+                var anchoredPosition = new Vector2(_position.Value.x, _position.Value.y);
+
+                _rectTransform.anchoredPosition = anchoredPosition;
                 _rectTransform.sizeDelta = _size;
-            }
-
-            if (e.PropertyName == nameof(Position) && _position is not null)
-            {
-                _rectTransform.position = new Vector3(_position.Value.x, _position.Value.y, 0f);
             }
         }
 
