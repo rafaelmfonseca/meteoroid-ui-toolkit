@@ -37,6 +37,13 @@ namespace Meteoroid.Graphics.Controls
             set => RegistryPropertyState(nameof(Position), ref _position, value);
         }
 
+        private State<Padding> _padding;
+        public State<Padding> Padding
+        {
+            get => _padding;
+            set => RegistryPropertyState(nameof(Padding), ref _padding, value);
+        }
+
         public Box() : base()
         {
             _rectTransform = Element.AddComponent<RectTransform>();
@@ -44,19 +51,30 @@ namespace Meteoroid.Graphics.Controls
 
         public override void OnStateChanged(StateChangedEvent e)
         {
-            if (   (_pivot    is not null)
-                && (_anchor   is not null)
-                && (_size     is not null)
-                && (_position is not null))
+            _rectTransform.localScale = Vector3.one;
+
+            if (_pivot is not null)
             {
-                _rectTransform.localScale = Vector3.one;
-
                 _rectTransform.SetPivot(_pivot);
+            }
+
+            if (_anchor is not null)
+            {
                 _rectTransform.SetAnchor(_anchor);
+            }
 
-                var anchoredPosition = new Vector2(_position.Value.x, _position.Value.y);
+            if (_position is not null)
+            {
+                _rectTransform.anchoredPosition = new Vector2(_position.Value.x, _position.Value.y);
+            }
 
-                _rectTransform.anchoredPosition = anchoredPosition;
+            if (_padding is not null)
+            {
+                _rectTransform.SetPadding(_padding);
+            }
+
+            if (_size is not null)
+            {
                 _rectTransform.sizeDelta = _size;
             }
         }
