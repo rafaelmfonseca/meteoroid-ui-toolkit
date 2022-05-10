@@ -51,7 +51,7 @@ namespace Meteoroid.Graphics.Controls
 
         public override void OnStateChanged(StateChangedEvent e)
         {
-            _rectTransform.localScale = Vector3.one;
+            ResetDefaultValues();
 
             ForceUpdatePivot();
 
@@ -62,6 +62,11 @@ namespace Meteoroid.Graphics.Controls
             ForceUpdateSizeDelta();
 
             _rectTransform.ForceUpdateRectTransforms();
+        }
+
+        private void ResetDefaultValues()
+        {
+            _rectTransform.localScale = Vector3.one;
         }
 
         private void ForceUpdatePivot()
