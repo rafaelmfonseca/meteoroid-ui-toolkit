@@ -53,14 +53,31 @@ namespace Meteoroid.Graphics.Controls
         {
             _rectTransform.localScale = Vector3.one;
 
-            _rectTransform.SetPivot(_pivot ?? PivotPresets.TopLeft);
-            _rectTransform.SetAnchor(_anchor ?? AnchorPresets.TopLeft);
+            ForceUpdatePivot();
+
+            ForceUpdateAnchor();
 
             ForceUpdateAnchoredPosition();
 
             ForceUpdateSizeDelta();
 
             _rectTransform.ForceUpdateRectTransforms();
+        }
+
+        private void ForceUpdatePivot()
+        {
+            if (_pivot is not null)
+            {
+                _rectTransform.SetPivot(_pivot);
+            }
+        }
+
+        private void ForceUpdateAnchor()
+        {
+            if (_anchor is not null)
+            {
+                _rectTransform.SetAnchor(_anchor);
+            }
         }
 
         private void ForceUpdateAnchoredPosition()
