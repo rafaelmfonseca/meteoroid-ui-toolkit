@@ -70,9 +70,7 @@ namespace Meteoroid.Graphics
             _value = initialValue;
         }
 
-        public State(T initialValue) : this(initialValue, false) { }
-
-        public State() { }
+        public State(T initialValue = default) : this(initialValue, false) { }
 
         public virtual void AddListener(UnityAction<ValueChangedEvent<T>> call)
         {

@@ -87,7 +87,7 @@ namespace Meteoroid.Graphics.Controls
 
         private void ForceUpdateAnchoredPosition()
         {
-            Vector2 anchoredPosition = Vector2.zero;
+            var anchoredPosition = Vector2.zero;
 
             if (_padding is not null)
             {
@@ -106,7 +106,7 @@ namespace Meteoroid.Graphics.Controls
 
         private void ForceUpdateSizeDelta()
         {
-            Vector2 sizeDelta = Vector2.zero;
+            var sizeDelta = Vector2.zero;
 
             if (_padding is not null)
             {
