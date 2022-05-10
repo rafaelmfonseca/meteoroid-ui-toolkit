@@ -191,5 +191,20 @@ namespace Meteoroid.Graphics.Tests
             (state as IState).Value = 40;
             Assert.That(changedCount, Is.EqualTo(3));
         }
+
+        [Test]
+        public void TestStateShouldNotTriggerEventsWhenSameValue()
+        {
+            int changedCount = 0;
+
+            var state = new State<int>(10);
+
+            (state as IState).AddListener((evt) => changedCount++);
+            (state as IState<int>).AddListener((evt) => changedCount++);
+
+            (state as IState).Value = 10;
+
+            Assert.That(changedCount, Is.EqualTo(0));
+        }
     }
 }
