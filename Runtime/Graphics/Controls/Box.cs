@@ -51,10 +51,6 @@ namespace Meteoroid.Graphics.Controls
 
         public override void OnStateChanged(StateChangedEvent e)
         {
-            /**
-             * m_AnchoredPosition: {x: ((left - right) / 2) + x, y: ((bottom - top) / 2) + y}
-             * m_SizeDelta: {x: -(left + right) + width, y: -(top + bottom) + height}
-             */
             _rectTransform.localScale = Vector3.one;
 
             _rectTransform.SetPivot(_pivot ?? PivotPresets.TopLeft);
