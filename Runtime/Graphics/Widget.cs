@@ -106,7 +106,7 @@ namespace Meteoroid.Graphics
 
             for (int i = 0; i < _children.Length; i++)
             {
-                if (!ReferenceEquals(_children[i].Element.transform, _element.transform))
+                if (!ReferenceEquals(_children[i].Element.transform.parent, _element.transform))
                 {
                     _children[i].Element.transform.SetParent(_element.transform, worldPositionStays: false);
 
