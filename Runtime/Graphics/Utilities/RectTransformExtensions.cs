@@ -130,11 +130,5 @@ namespace Meteoroid.Graphics.Utilities
                     break;
             }
         }
-
-        public static void SetPadding(this RectTransform rectTransform, Padding padding)
-        {
-            rectTransform.offsetMin = new Vector2(padding.left, padding.bottom);
-            rectTransform.offsetMax = new Vector2(padding.right * -1f, padding.top * -1f);
-        }
     }
 }

@@ -51,32 +51,58 @@ namespace Meteoroid.Graphics.Controls
 
         public override void OnStateChanged(StateChangedEvent e)
         {
+            /**
+             * m_AnchoredPosition: {x: ((left - right) / 2) + x, y: ((bottom - top) / 2) + y}
+             * m_SizeDelta: {x: -(left + right) + width, y: -(top + bottom) + height}
+             */
             _rectTransform.localScale = Vector3.one;
 
-            if (_pivot is not null)
-            {
-                _rectTransform.SetPivot(_pivot);
-            }
+            _rectTransform.SetPivot(_pivot ?? PivotPresets.TopLeft);
+            _rectTransform.SetAnchor(_anchor ?? AnchorPresets.TopLeft);
 
-            if (_anchor is not null)
+            ForceUpdateAnchoredPosition();
+
+            ForceUpdateSizeDelta();
+
+            _rectTransform.ForceUpdateRectTransforms();
+        }
+
+        private void ForceUpdateAnchoredPosition()
+        {
+            Vector2 anchoredPosition = Vector2.zero;
+
+            if (_padding is not null)
             {
-                _rectTransform.SetAnchor(_anchor);
+                var padding = _padding.Value;
+
+                anchoredPosition += new Vector2((padding.left - padding.right) / 2, (padding.bottom - padding.top) / 2);
             }
 
             if (_position is not null)
             {
-                _rectTransform.anchoredPosition = new Vector2(_position.Value.x, _position.Value.y);
+                anchoredPosition += _position;
             }
+
+            _rectTransform.anchoredPosition = anchoredPosition;
+        }
+
+        private void ForceUpdateSizeDelta()
+        {
+            Vector2 sizeDelta = Vector2.zero;
 
             if (_padding is not null)
             {
-                _rectTransform.SetPadding(_padding);
+                var padding = _padding.Value;
+
+                sizeDelta += new Vector2(-(padding.left + padding.right), -(padding.top + padding.bottom));
             }
 
             if (_size is not null)
             {
-                _rectTransform.sizeDelta = _size;
+                sizeDelta += _size;
             }
+
+            _rectTransform.sizeDelta = sizeDelta;
         }
 
         public override void OnParentChanged(ElementParentChangedEvent e)

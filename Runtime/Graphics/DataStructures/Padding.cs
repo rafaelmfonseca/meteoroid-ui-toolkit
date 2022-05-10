@@ -5,6 +5,10 @@ namespace Meteoroid.Graphics.DataStructures
 {
     public struct Padding : IEquatable<Padding>, IFormattable
     {
+        private static readonly Padding zeroPadding = new Padding(0f);
+
+        public static Padding zero => zeroPadding;
+
         public float left;
         public float top;
 
