@@ -6,6 +6,7 @@ namespace Meteoroid.Graphics
 {
     public static class MeteoroidUI
     {
+        private static readonly IElementParentSetter _parentSetter = new DefaultElementParentSetter();
         private static readonly IContainerActivator _activator = new DefaultContainerActivator();
 
         public static IWidget Render<C>(GameObject parent) where C: IContainer, new()
@@ -17,7 +18,7 @@ namespace Meteoroid.Graphics
         {
             var body = container.Body();
 
-            body.Element.transform.SetParent(parent.transform, worldPositionStays: false);
+            _parentSetter.Update(parent, body.Element);
 
             return body;
         }

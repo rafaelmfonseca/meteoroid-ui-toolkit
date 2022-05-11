@@ -2,12 +2,14 @@ using System;
 using System.Linq;
 using UnityEngine;
 using Meteoroid.Graphics.Metadata;
+using Meteoroid.Graphics.Infrastructure;
 using System.Collections.Concurrent;
 
 namespace Meteoroid.Graphics
 {
     public abstract class Widget : IWidget, IDisposable
     {
+        private readonly IElementParentSetter _parentSetter = new DefaultElementParentSetter();
         private ConcurrentDictionary<string, IState> _states = new ConcurrentDictionary<string, IState>();
         private IWidget[] _children;
         private GameObject _element;
@@ -108,7 +110,7 @@ namespace Meteoroid.Graphics
             {
                 if (!ReferenceEquals(_children[i].Element.transform.parent, _element.transform))
                 {
-                    _children[i].Element.transform.SetParent(_element.transform, worldPositionStays: false);
+                    _parentSetter.Update(_element, _children[i].Element);
 
                     _children[i].OnParentChanged(new ElementParentChangedEvent(this));
                 }
