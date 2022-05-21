@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using UnityEngine;
 
 namespace Meteoroid.Graphics.DataStructures
 {
@@ -56,5 +57,14 @@ namespace Meteoroid.Graphics.DataStructures
                 right.ToString(format, formatProvider),
                 bottom.ToString(format, formatProvider));
         }
+
+        /// <summary>
+        /// X = Left
+        /// Y = Bottom
+        /// Z = Right
+        /// W = Top
+        /// </summary>
+        public static implicit operator Vector4(Padding padding)
+            => new Vector4(padding.left, padding.bottom, padding.right, padding.top);
     }
 }
