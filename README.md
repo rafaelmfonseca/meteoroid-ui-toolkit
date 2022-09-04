@@ -23,3 +23,64 @@ Created by Rafael Moreira Fonseca
     }
 }
 ```
+
+## Getting Started
+
+
+``` cs
+
+public class MainMenuPage : MonoBehaviour
+{
+    public class MainMenuPageContainer : Container
+    {
+        private readonly State<Vector2> _position = new State<Vector2>();
+
+        public MainMenuPageContainer()
+        {
+            Body = () => new Box
+            {
+                Anchor = AnchorPresets.StretchAll,
+                Pivot = PivotPresets.StretchAll,
+                Padding = new Padding(10f, 20f, 30f, 40f),
+
+                Children = new[]
+                {
+                    new Box
+                    {
+                        Anchor = AnchorPresets.TopLeft,
+                        Pivot = PivotPresets.TopLeft,
+                        Size = new Vector2(100f, 200f),
+                        Position = _position,
+                        Children = new[]
+                        {
+                            new Drawable()
+                            {
+                                Sprite = Resources.Load<Sprite>("blocks"),
+                                Anchor = AnchorPresets.StretchAll,
+                                Pivot = PivotPresets.StretchAll,
+
+                                RaycastTarget = false,
+                                RaycastPadding = new Padding(1, 2, 3, 4),
+                                Maskable = false,
+                            }
+                        }
+                    },
+                    new Box
+                    {
+                        Anchor = AnchorPresets.TopStretch,
+                        Pivot = PivotPresets.TopStretch,
+                        Position = new Vector2(0f, 20f),
+                        Size = new Vector2(0f, 200f),
+                        Padding = new Padding(10f, 0f, 30f, 0f),
+                    }
+                }
+            };
+        }
+    }
+
+    void Start()
+    {
+        MeteoroidUI.Render<MainMenuPageContainer>(this.gameObject);
+    }
+}
+```
